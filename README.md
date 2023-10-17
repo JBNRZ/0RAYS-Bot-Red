@@ -1,7 +1,12 @@
-# 0RAYS-Bot
-基于Nonebot2的QQ机器人
+# nonebot2
 
-# 开发文档
-基于 Red 协议的临时替代：https://github.com/nonebot/adapter-red/
+## How to start
 
-nonebot: https://nonebot.dev/
+1. generate project using `nb create` .
+2. create your plugin using `nb plugin create` .
+3. writing your plugins under `nonebot2/plugins` folder.
+4. run your bot using `nb run --reload` .
+
+## Documentation
+
+See [Docs](https://nonebot.dev/)
