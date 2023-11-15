@@ -2,7 +2,7 @@ from pydantic import Extra, BaseModel
 
 
 class Config(BaseModel, extra=Extra.ignore):
-    openai_api_keys = ""
+    openai_api_keys = []
     openai_model_name = "gpt-3.5-turbo"
     openai_max_history_limit = 5
     openai_http_proxy = ""
