@@ -1,31 +1,83 @@
-from nonebot.adapters.red import Message, MessageSegment, Bot
-from nonebot.adapters.red.event import MemberAddEvent
-from nonebot.plugin import on_notice
+from uuid import uuid4
+
+from Crypto.Cipher import AES
 from nonebot import get_driver
+from nonebot.adapters.red import Bot
+from nonebot.adapters.red import Message, MessageSegment
+from nonebot.adapters.red.event import MemberAddEvent
+from nonebot.log import logger
+from nonebot.plugin import on_notice
+from requests import post
+
+import smtplib
+from email.mime.text import MIMEText
+from email.header import Header
+
+
+def email(qq: str, msg: str):
+    sender = get_driver().config.oauth_email_sender
+    receivers = [f'{qq}@qq.com']
+
+    mail_host = get_driver().config.oauth_email_host
+    mail_pass = get_driver().config.oauth_email_pwd
+
+    message = MIMEText(msg, 'plain', 'utf-8')
+    message['From'] = Header(f"{sender.split('@')[0]} <{sender}>")
+    message['To'] = Header(f"{qq}@qq.com", 'utf-8')
+    message['Subject'] = Header("杭电身份认证", 'utf-8')
+    s = smtplib.SMTP()
+    s.connect(mail_host, get_driver().config.oauth_email_port)
+    s.login(sender, mail_pass)
+    s.sendmail(sender, receivers, message.as_string())
+
+
+def padding(msg: bytes):
+    return msg + bytes.fromhex((hex(16 - len(msg) % 16)[2:]).rjust(2, "0")) * (16 - len(msg) % 16)
+
+
+def encrypt(msg: bytes, key: bytes) -> bytes:
+    msg = padding(msg)
+    return AES.new(key, AES.MODE_CBC, key[:16]).encrypt(msg)
 
 
 async def isIncreaseNotice(event: MemberAddEvent) -> bool:
-    return isinstance(event, MemberAddEvent)
+    return isinstance(event, MemberAddEvent) and event.peerUid in get_driver().config.oauth_group
 
 
-welcome = on_notice(rule=isIncreaseNotice)
-group = get_driver().config.oauth_group
+welcome = on_notice(rule=isIncreaseNotice, block=False)
+manager = get_driver().config.oauth_manager
 
 
 @welcome.handle()
 async def handle(bot: Bot, event: MemberAddEvent):
-    if event.peerUid in group:
-        msg = Message(MessageSegment.at(event.get_user_id()))
-        msg += f"欢迎来到 0RAYS 2023 招新群！！！" + Message(MessageSegment.face('99')) + Message(MessageSegment.face('2')) + "\n"
-        msg += "你可能还不了解CTF是什么，巧了，我也不知道，我只是个机器人\n"
-        msg += "但这都不是问题，计算机方面最不缺的就是教学资源了（善用百度谷歌等搜索引擎）\n"
-        msg += "1. 去ctf wiki看看ctf到底是怎么回事吧\nhttps://ctf-wiki.org/（在这里你将能了解CTF的各个方向）\n"
-        msg += "2. 选择一个你喜欢的方向，做几道货真价实的CTF题目体会体会\n看看ctfhub的技能树\n"
-        msg += "https://www.ctfhub.com/#/index（一个很好的CTF学习网站，里面的赛事中心会公布各大国内外赛事的信息，嘛嘛再也不用担心我找不到比赛了）\n"
-        msg += "去攻防世界做几道新手入门题\nhttps://adworld.xctf.org.cn（这里汇集了大量的CTF真题，并且非常人性化的设置了新手区和进阶区，助你登堂入室）\n"
-        msg += f"啊对，还有0RAYS自己的平台：https://training.0rays.club/（打不开就杀运维" + Message(MessageSegment.at('3537659915')) + "\n"
-        msg += "还有bugku https://ctf.bugku.com/ 等等\n"
-        msg += "实在不行@群里的管理员，他们会乐意回答一些入门问题"
-        msg += f"管理员不在线怎么办，那就私聊" + Message(MessageSegment.at('3537659915')) + "（这哥们几乎啥时候都在线\n"
-        msg += "最后的最后，放出一个重磅的消息：一年一度的赛博杯马上就要来啦！！(预计将在10月份举办)届时我们也将第一次招纳新成员，期待优秀的你能够加入我们~\n"
-        await bot.send_group_message(target=event.peerUid, message=msg)
+    await bot.mute_member(int(event.peerUid), int(event.get_user_id()), duration=2592000)
+    token = str(uuid4())
+    url: str = get_driver().config.oauth_server
+    url += "register" if url.endswith("/") else "/register"
+    data = {
+        "code": token
+    }
+    cookie = {
+        "reg-code": get_driver().config.oauth_register_code
+    }
+    response = post(url, data=data, cookies=cookie)
+    if response.status_code != 200:
+        logger.error("Failed to register token")
+        return
+    qq = encrypt(event.get_user_id().encode(), get_driver().config.oauth_secret.encode()).hex()
+    group = encrypt(event.peerUid.encode(), get_driver().config.oauth_secret.encode()).hex()
+    msg = "在您正式加入群聊前，需要您进行杭电学生认证，以确认您的真实身份\n"
+    msg += "请访问一下链接进行认证，请注意该链接只能访问一次：\n"
+    msg += f"https://api.0rays.club/request/?qq={qq}&gp={group}&token={token}"
+    try:
+        email(event.get_user_id(), msg=msg)
+        await bot.send_group_message(
+            target=event.peerUid,
+            message=Message(MessageSegment.at(event.get_user_id())) + " 身份验证邮件已发送至您的QQ邮箱，请验证后继续群聊，感谢配合"
+        )
+    except Exception as e:
+        logger.error(f"Failed to send email to {event.get_user_id()}: {e}")
+        await bot.send_group_message(
+            target=event.peerUid,
+            message=Message(MessageSegment.at(event.get_user_id())) + f" 身份验证出现了点儿小问题，请私聊管理员: {manager}"
+        )

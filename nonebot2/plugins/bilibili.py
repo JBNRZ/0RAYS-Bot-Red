@@ -10,7 +10,7 @@ from nonebot.adapters.red import PrivateMessageEvent, GroupMessageEvent
 analysis_stat = {}
 analysis_bili = on_regex(
     "(b23.tv)|(www.bilibili.com/video)|(www.bilibili.com/bangumi)|(^(BV|bv)([0-9A-Za-z]{10}))|(^(av|AV)([0-9]+)("
-    "/.*|\\?.*|)$)|(\\[\\[QQ小程序\\]哔哩哔哩\\])|(QQ小程序&amp;#93;哔哩哔哩)|(QQ小程序&#93;哔哩哔哩)")
+    "/.*|\\?.*|)$)|(\\[\\[QQ小程序\\]哔哩哔哩\\])|(QQ小程序&amp;#93;哔哩哔哩)|(QQ小程序&#93;哔哩哔哩)", block=True)
 
 
 @analysis_bili.handle()
