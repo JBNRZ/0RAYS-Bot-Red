@@ -55,7 +55,9 @@ async def handle(bot: Bot, event: MemberAddEvent):
     url: str = get_driver().config.oauth_server
     url += "register" if url.endswith("/") else "/register"
     data = {
-        "code": token
+        "code": token,
+        "qq": event.get_user_id(),
+        "gp": event.peerUid
     }
     cookie = {
         "reg-code": get_driver().config.oauth_register_code
@@ -63,6 +65,10 @@ async def handle(bot: Bot, event: MemberAddEvent):
     response = post(url, data=data, cookies=cookie)
     if response.status_code != 200:
         logger.error("Failed to register token")
+        await bot.send_group_message(
+            target=event.peerUid,
+            message=Message(MessageSegment.at(event.get_user_id())) + f" 身份验证出现了点儿小问题，请私聊管理员: {manager}"
+        )
         return
     qq = encrypt(event.get_user_id().encode(), get_driver().config.oauth_secret.encode()).hex()
     group = encrypt(event.peerUid.encode(), get_driver().config.oauth_secret.encode()).hex()

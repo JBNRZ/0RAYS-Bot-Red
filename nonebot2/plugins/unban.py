@@ -38,3 +38,4 @@ async def check_baned_user():
             msg += "最后的最后，放出一个重磅的消息：一年一度的赛博杯马上就要来啦！！(预计将在10月份举办)届时我们也将第一次招纳新成员，期待优秀的你能够加入我们~\n"
             await bot.send_group_message(target=group, message=msg)
 
+
