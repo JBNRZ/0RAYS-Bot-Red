@@ -11,7 +11,7 @@ manager = get_driver().config.oauth_manager
 
 @scheduler.scheduled_job("cron", hour="0", id="Kick")
 async def kick_unchecked_user():
-    url = get_driver().config.oauth_server + "kick"
+    url = get_driver().config.oauth_server.strip("/") + "/oauth/kick"
     cookie = {
         "reg-code": get_driver().config.oauth_register_code
     }

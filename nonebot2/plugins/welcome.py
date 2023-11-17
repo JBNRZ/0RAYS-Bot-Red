@@ -52,8 +52,7 @@ manager = get_driver().config.oauth_manager
 async def handle(bot: Bot, event: MemberAddEvent):
     await bot.mute_member(int(event.peerUid), int(event.get_user_id()), duration=2592000)
     token = str(uuid4())
-    url: str = get_driver().config.oauth_server
-    url += "register" if url.endswith("/") else "/register"
+    url: str = get_driver().config.oauth_server.strip("/") + "/oauth/register"
     data = {
         "code": token,
         "qq": event.get_user_id(),
@@ -74,7 +73,7 @@ async def handle(bot: Bot, event: MemberAddEvent):
     group = encrypt(event.peerUid.encode(), get_driver().config.oauth_secret.encode()).hex()
     msg = "在您正式加入群聊前，需要您进行杭电学生认证，以确认您的真实身份\n"
     msg += "请访问一下链接进行认证，请注意该链接只能访问一次：\n"
-    msg += f"https://api.0rays.club/request/?qq={qq}&gp={group}&token={token}"
+    msg += f"{get_driver().config.oauth_server.strip('/')}/oauth/request/?qq={qq}&gp={group}&token={token}"
     try:
         email(event.get_user_id(), msg=msg)
         await bot.send_group_message(
