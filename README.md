@@ -14,11 +14,17 @@ OAUTH_SERVER = "https://example.com"
 OAUTH_GROUP = ["123", "456"]
 OAUTH_MANAGER = "123456"
 OAUTH_REGISTER_CODE = "xxx"
-OAUTH_SECRET = "xxx"
+OAUTH_SECRET = "xxx"[README.md](README.md)
 OAUTH_EMAIL_SENDER = "test@example.com"
 OAUTH_EMAIL_PWD = "secret"
 OAUTH_EMAIL_HOST = "smtp.example.com"
 OAUTH_EMAIL_PORT = 25
+
+WX_KEY = "xxx"
+WX_TOKEN = "xxx"
+WX_APPID = "xxx"
+WX_NOTICE_GROUP = ["123456"]
+WX_MANAGER = "123456"
 
 OPENAI_API_KEYS = ["", "", ""]
 OPENAI_MODEL_NAME = "gpt-3.5-turbo"
