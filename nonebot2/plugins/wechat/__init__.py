@@ -23,16 +23,20 @@ async def check(request: Request) -> Response:
 
 @app.post("/wechat/")
 async def receive(request: Request) -> dict:
-    bot: Bot = get_bot()
-    data = await request.body()
-    msg_sign = request.query_params["msg_signature"]
-    nonce = request.query_params["nonce"]
-    timestamp = request.query_params["timestamp"]
+    try:
+        bot: Bot = get_bot()
+        data = await request.body()
+        msg_sign = request.query_params["msg_signature"]
+        nonce = request.query_params["nonce"]
+        timestamp = request.query_params["timestamp"]
 
-    key = get_driver().config.wx_key
-    token = get_driver().config.wx_token
-    appid = get_driver().config.wx_appid
-    msg = WXCrypt(token, key, appid).decrypt(data.decode(), msg_sign, nonce, timestamp)
+        key = get_driver().config.wx_key
+        token = get_driver().config.wx_token
+        appid = get_driver().config.wx_appid
+        msg = WXCrypt(token, key, appid).decrypt(data.decode(), msg_sign, nonce, timestamp)
+    except Exception as e:
+        logger.error(e)
+        return {"status": "error", "code": -1}
     try:
         msg = f"收到来自微信公众号信息：{content(msg)}"
         for group in get_driver().config.wx_notice_group:
