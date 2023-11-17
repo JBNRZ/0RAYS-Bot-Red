@@ -11,7 +11,7 @@ manager = get_driver().config.oauth_manager
 
 @scheduler.scheduled_job("cron", second="*", id="Unban")
 async def check_baned_user():
-    url = get_driver().config.oauth_server + "unban"
+    url = get_driver().config.oauth_server.strip("/") + "/oauth/unban"
     cookie = {
         "reg-code": get_driver().config.oauth_register_code
     }
