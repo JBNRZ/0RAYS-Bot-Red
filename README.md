@@ -30,6 +30,7 @@ OPENAI_API_KEYS = ["", "", ""]
 OPENAI_MODEL_NAME = "gpt-3.5-turbo"
 OPENAI_MAX_HISTORY_LIMIT = 30   # 保留与每个用户的聊天记录条数
 ENABLE_PRIVATE_CHAT = True   # 私聊开关，默认开启，改为False关闭
+ENABLE_GROUP_CHAT = False  # 群组开关，默认关闭，改为True开启
 
 DRIVER=~fastapi+~aiohttp
 RED_BOTS='
