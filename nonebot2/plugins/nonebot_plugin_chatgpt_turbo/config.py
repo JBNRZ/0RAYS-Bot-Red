@@ -7,6 +7,7 @@ class Config(BaseModel, extra=Extra.ignore):
     openai_max_history_limit = 5
     openai_http_proxy = ""
     enable_private_chat: bool = True
+    enable_group_chat: bool = False
     chatgpt_turbo_public: bool = False  # 群聊是否开启公共会话
 
 

@@ -3,7 +3,7 @@ from random import choice
 import nonebot
 from nonebot import on_command
 from nonebot.adapters.red import Message, MessageSegment
-from nonebot.adapters.red import PrivateMessageEvent, MessageEvent
+from nonebot.adapters.red import PrivateMessageEvent, GroupMessageEvent, MessageEvent
 from nonebot.log import logger
 from nonebot.params import CommandArg
 from nonebot.permission import SUPERUSER
@@ -39,8 +39,11 @@ clear_request = on_command("clear", block=True, priority=1, permission=SUPERUSER
 # 单纯记录不响应
 @chat_record.handle()
 async def _(event: MessageEvent, msg: Message = CommandArg()):
+    if not plugin_config.enable_group_chat and isinstance(event, GroupMessageEvent):
+        await chat_record.finish("对不起，暂时不支持群聊中使用")
+
     if not plugin_config.enable_private_chat and isinstance(event, PrivateMessageEvent):
-        chat_record.finish("对不起，私聊暂不支持此功能。")
+        await chat_record.finish("对不起，私聊暂不支持此功能。")
 
     if not api_key:
         await chat_record.finish(MessageSegment.text("请先配置openai_api_key"), at_sender=True)
