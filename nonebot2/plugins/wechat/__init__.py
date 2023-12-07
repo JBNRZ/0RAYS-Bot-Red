@@ -26,6 +26,7 @@ async def receive(request: Request) -> dict:
     try:
         bot: Bot = get_bot()
         data = await request.body()
+        openid = request.query_params["openid"]
         msg_sign = request.query_params["msg_signature"]
         nonce = request.query_params["nonce"]
         timestamp = request.query_params["timestamp"]
