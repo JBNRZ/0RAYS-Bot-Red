@@ -1,6 +1,4 @@
-from nonebot import logger
-from nonebot import get_bot
-from nonebot import get_driver
+from nonebot import logger, get_bot, get_driver
 from nonebot.adapters.red import Bot
 from nonebot_plugin_apscheduler import scheduler
 from requests import get
