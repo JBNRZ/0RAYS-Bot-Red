@@ -9,26 +9,7 @@ from nonebot.log import logger
 from nonebot.plugin import on_notice
 from requests import post
 
-import smtplib
-from email.mime.text import MIMEText
-from email.header import Header
-
-
-def email(qq: str, msg: str):
-    sender = get_driver().config.oauth_email_sender
-    receivers = [f'{qq}@qq.com']
-
-    mail_host = get_driver().config.oauth_email_host
-    mail_pass = get_driver().config.oauth_email_pwd
-
-    message = MIMEText(msg, 'plain', 'utf-8')
-    message['From'] = Header(f"{sender.split('@')[0]} <{sender}>")
-    message['To'] = Header(f"{qq}@qq.com", 'utf-8')
-    message['Subject'] = Header("杭电身份认证", 'utf-8')
-    s = smtplib.SMTP()
-    s.connect(mail_host, get_driver().config.oauth_email_port)
-    s.login(sender, mail_pass)
-    s.sendmail(sender, receivers, message.as_string())
+from ._send_email import send_email
 
 
 def padding(msg: bytes):
@@ -75,7 +56,7 @@ async def handle(bot: Bot, event: MemberAddEvent):
     msg += "请访问一下链接进行认证，请注意该链接只能访问一次：\n"
     msg += f"{get_driver().config.oauth_server.strip('/')}/oauth/request/?qq={qq}&gp={group}&token={token}"
     try:
-        email(event.get_user_id(), msg=msg)
+        send_email(event.get_user_id(), msg=msg)
         await bot.send_group_message(
             target=event.peerUid,
             message=Message(MessageSegment.at(event.get_user_id())) + " 身份验证邮件已发送至您的QQ邮箱，请验证后继续群聊，感谢配合"

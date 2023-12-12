@@ -4,6 +4,7 @@ from nonebot import get_driver
 from nonebot.adapters.red import Bot
 from nonebot_plugin_apscheduler import scheduler
 from requests import get
+from ._send_email import send_email
 
 
 manager = get_driver().config.oauth_manager
@@ -20,5 +21,7 @@ async def kick_unchecked_user():
         bot: Bot = get_bot()
         for baned in response.json()["data"]:
             qq, group = baned.split("-")
-            await bot.kick(int(group), qq, reason="未进行身份认证，如未收到验证邮箱，请检查QQ邮箱垃圾箱")
+            send_email(qq, "未及时进行身份认证，可再次申请加群进行验证，如未收到验证邮箱，请检查QQ邮箱垃圾箱")
+            logger.info(f"Send kick email to {qq} in {group}")
+            await bot.kick(int(group), qq, reason="未进行身份认证，可再次申请加群进行验证，如未收到验证邮箱，请检查QQ邮箱垃圾箱")
             logger.info(f"Kick {qq} from {group}")

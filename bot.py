@@ -8,6 +8,7 @@ driver.register_adapter(RedAdapter)
 
 nonebot.load_builtin_plugin("echo")
 nonebot.load_plugins("nonebot2/plugins")
+nonebot.load_plugins("nonebot2/welcome")
 
 
 if __name__ == "__main__":
