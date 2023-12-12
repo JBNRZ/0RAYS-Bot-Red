@@ -57,9 +57,11 @@ async def handle(bot: Bot, event: MemberAddEvent):
     msg += f"{get_driver().config.oauth_server.strip('/')}/oauth/request/?qq={qq}&gp={group}&token={token}"
     try:
         send_email(event.get_user_id(), msg=msg)
+        msg = Message(MessageSegment.at(event.get_user_id()))
+        msg += " 身份验证邮件已发送至您的QQ邮箱，如未收到请检查垃圾箱或私聊管理；请验证后继续群聊，感谢配合\n每日零点将会清理未验证成员"
         await bot.send_group_message(
             target=event.peerUid,
-            message=Message(MessageSegment.at(event.get_user_id())) + " 身份验证邮件已发送至您的QQ邮箱，请验证后继续群聊，感谢配合"
+            message=msg
         )
     except Exception as e:
         logger.error(f"Failed to send email to {event.get_user_id()}: {e}")
