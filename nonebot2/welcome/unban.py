@@ -22,7 +22,7 @@ async def check_baned_user():
             qq, group = baned.split("-")
             await bot.unmute_member(int(group), qq)
             msg = Message(MessageSegment.at(qq))
-            msg += "欢迎参加第七届赛博杯，祝你在这里玩的愉快，有问题找管理\n平台注册码：093d7ed9-a942-4823-a601-fb8210c9e340"
+            msg += "欢迎参加第七届赛博杯，祝你在这里玩的愉快，有问题找管理\n平台地址: https://training.0rays.club"
             # msg += f"欢迎来到 0RAYS 2023 招新群！！！" + Message(MessageSegment.face('99')) + Message(
             #     MessageSegment.face('2')) + "\n"
             # msg += "你可能还不了解CTF是什么，巧了，我也不知道，我只是个机器人\n"
