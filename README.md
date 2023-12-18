@@ -53,6 +53,12 @@ __此文件为主要配置文件__
 |   OPENAI_PRIVATE_CHAT    |      True       |    私聊开关     |
 |    OPENAI_GROUP_CHAT     |      True       |    群聊开关     |
 
+#### Submission Notice
+|         name          |       example        | description  |
+|:---------------------:|:--------------------:|:------------:|
+| WEBHOOK_SESSION_TOKEN |        token         | 由CTFd携带验证身份  |
+|  FLAG_NOTICE_GROUPS   | ["123456", "789101"] | 要通知的QQ群，一个列表 |
+
 #### QQ Server
 > QQ服务端配置参见路径：C:\Users\${Username}\.chronocat\config\chronocat.yml
 
@@ -94,6 +100,9 @@ OPENAI_MAX_HISTORY_LIMIT = 30   # 保留与每个用户的聊天记录条数
 ENABLE_PRIVATE_CHAT = True   # 私聊开关，默认开启，改为False关闭
 ENABLE_GROUP_CHAT = False  # 群聊开关，默认关闭，改为True开启
 
+WEBHOOK_SESSION_TOKEN = "token"
+FLAG_NOTICE_GROUPS = ["123456"]
+
 DRIVER=~fastapi+~aiohttp
 RED_BOTS='
 [
@@ -105,6 +114,3 @@ RED_BOTS='
 ]
 '
 ```
-
-# Todo
-- 修改解除禁言和踢人逻辑，方便日志审查
