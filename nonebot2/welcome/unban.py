@@ -1,10 +1,7 @@
-from nonebot import get_bot
-from nonebot import get_driver
-from nonebot.adapters.red import Bot
-from nonebot.adapters.red import Message, MessageSegment
+from nonebot import get_driver, get_bot
+from nonebot.adapters.red import Bot, Message, MessageSegment
 from nonebot_plugin_apscheduler import scheduler
 from requests import get
-
 
 manager = get_driver().config.oauth_manager
 
@@ -38,5 +35,3 @@ async def check_baned_user():
             # msg += f"管理员不在线怎么办，那就私聊" + Message(MessageSegment.at(manager)) + "（这哥们几乎啥时候都在线\n"
             # msg += "最后的最后，放出一个重磅的消息：一年一度的赛博杯马上就要来啦！！(预计将在10月份举办)届时我们也将第一次招纳新成员，期待优秀的你能够加入我们~\n"
             await bot.send_group_message(target=group, message=msg)
-
-
