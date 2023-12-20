@@ -38,6 +38,7 @@ async def flag(data: str, request: Request) -> Response:
                                              message=f"恭喜 {username} 获得了题目 {challenge} {blood[count]}血!!!")
             else:
                 await bot.send_group_message(target=group, message=f"恭喜 {username} 解出了题目 {challenge}, tql!!!! 0rz")
+        return Response(status_code=200)
     except Exception as e:
         logger.error(str(e))
         return Response(status_code=500)
