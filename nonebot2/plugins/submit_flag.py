@@ -28,10 +28,16 @@ async def flag(data: str, request: Request) -> Response:
         data = loads(b64decode(data.encode()))
         username = data["username"]
         challenge = data["challenge"]
+        count = int(data["count"])
         _ = data["time"]
+        blood = {1: "一", 2: "二", 3: "三"}
         bot: Bot = get_bot()
         for group in groups:
-            await bot.send_group_message(target=group, message=f"恭喜 {username} 解出了题目 {challenge}, tql!!!! 0rz")
+            if count <= 3:
+                await bot.send_group_message(target=group,
+                                             message=f"恭喜 {username} 获得了题目 {challenge} {blood[count]}血!!!")
+            else:
+                await bot.send_group_message(target=group, message=f"恭喜 {username} 解出了题目 {challenge}, tql!!!! 0rz")
     except Exception as e:
         logger.error(str(e))
         return Response(status_code=500)
