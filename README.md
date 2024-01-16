@@ -1,9 +1,9 @@
 # 如何配置
-此处采用 MuMu模拟器 + OpenShamrock 的方式搭建
-> [OpenShamrock](https://github.com/whitechi73/OpenShamrock)
+此处采用 LiteLoaderQQNT + Chronocat Plugin 的方式搭建
+> Chronocat 已经删库，目前功能有限，且对ntqq版本有限制，后续可能基于模拟器+OpenShamrock开发
 
 ## QQ server
-LSPatch + Shamrock + QQ
+略
 
 ## nonebot
 初始化项目参考[官方文档](https://v2.nonebot.dev)
@@ -12,15 +12,15 @@ LSPatch + Shamrock + QQ
 __此文件为主要配置文件__
 
 #### 基础配置
-|         name          |             example             |     description     |
-|:---------------------:|:-------------------------------:|:-------------------:|
-|         HOST          |             0.0.0.0             | 以nonebot为服务端配置的监听IP |
-|         PORT          |              8080               | 以nonebot为服务端配置的监听端口 |
-|     COMMAND_START     |              ["/"]              |    机器人命令起始符，/cmd    |
-|      COMMAND_SEP      |              [""]               |      机器人命令分隔符       |
-|      SUPERUSERS       |           ["123456"]            |      机器人超级管理员       |
-|       NICKNAME        |             ["空格"]              |   机器人的名字，与@机器人同理    |
-| APSCHEDULER_AUTOSTART |              True               |      自动启动定时任务       |
+|         name          |  example   |     description     |
+|:---------------------:|:----------:|:-------------------:|
+|         HOST          |  0.0.0.0   | 以nonebot为服务端配置的监听IP |
+|         PORT          |    8080    | 以nonebot为服务端配置的监听端口 |
+|     COMMAND_START     |   ["/"]    |    机器人命令起始符，/cmd    |
+|      COMMAND_SEP      |    [""]    |      机器人命令分隔符       |
+|      SUPERUSERS       | ["123456"] |      机器人超级管理员       |
+|       NICKNAME        |   ["空格"]   |   机器人的名字，与@机器人同理    |
+| APSCHEDULER_AUTOSTART |    True    |      自动启动定时任务       |
 
 #### oauth(杭电认证)相关配置
 |        name         |         example         |         description          |
@@ -60,10 +60,12 @@ __此文件为主要配置文件__
 |  FLAG_NOTICE_GROUPS   | ["123456", "789101"] | 要通知的QQ群，一个列表 |
 
 #### QQ Server
+> QQ服务端配置参见路径：C:\Users\${Username}\.chronocat\config\chronocat.yml
 
 |   name   |      example      |   description    |
 |:--------:|:-----------------:|:----------------:|
 |  DRIVER  | ~fastapi+~aiohttp | 驱动器 (此项目中就用这个就行) |
+| RED_BOTS |        ...        |     QQ服务端配置      |
 
 
 ### example
@@ -75,7 +77,6 @@ COMMAND_SEP = [""]  # 配置命令分割字符
 SUPERUSERS = [""]
 NICKNAME = [""]
 APSCHEDULER_AUTOSTART = true
-ONEBOT_WS_URLS=["ws://ip:port"]
 
 OAUTH_SERVER = "https://example.com"
 OAUTH_GROUP = ["123", "456"]
@@ -103,4 +104,13 @@ WEBHOOK_SESSION_TOKEN = "token"
 FLAG_NOTICE_GROUPS = ["123456"]
 
 DRIVER=~fastapi+~aiohttp
+RED_BOTS='
+[
+  {
+    "port": "xxx",
+    "token": "xxxxxx",
+    "host": "xx.xx.xx.xx"
+  }
+]
+'
 ```
