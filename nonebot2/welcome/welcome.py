@@ -23,11 +23,7 @@ def encrypt(msg: bytes, key: bytes) -> bytes:
     return AES.new(key, AES.MODE_CBC, key[:16]).encrypt(msg)
 
 
-async def isIncreaseNotice(event: MemberAddEvent) -> bool:
-    return isinstance(event, MemberAddEvent) and event.peerUid in get_driver().config.oauth_group
-
-
-welcome = on_notice(rule=isIncreaseNotice, block=False)
+welcome = on_notice(block=False)
 resend = on_command("check", rule=to_me(), permission=SUPERUSER, block=True)
 manager = get_driver().config.oauth_manager
 
